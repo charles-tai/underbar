@@ -207,28 +207,16 @@ var _ = { };
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-      iterator || (iterator = _.identity);
-      var test = _.reduce(collection,
-          function (start,ele) {
-            if (start == 'false') {
-             return 'false';
-            }
-            if (!iterator(ele)) {
-              return 'false';
-            }
-          })
-      if (test == 'false'){
-        return false;
-      } else {
-        return true;
-      }
+    iterator || (iterator = _.identity);
+    return _.reduce(collection, function (wasFound,item) {
+      return wasFound && iterator(item);
+    },true)
     // TIP: Try re-using reduce() here.
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
-    iterator || (iterator = _.identity);
     var test = _.every(collection, function (ele) {
        return !iterator(ele);
     })
@@ -257,28 +245,12 @@ var _ = { };
   //   }, {
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
-  _.extend = function (obj) {
-    var len = arguments.length;
-    for (var i = 1; i < len; i++) {
-      for (var key in arguments[i]) {
-        obj[key] = arguments[i][key];
-      }
-    }
-    return obj;
+  _.extend = function(obj) {
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
-    var len = arguments.length;
-    for (var i = 1; i < len; i++) {
-      for (var key in arguments[i]) {
-        if (obj[key] == undefined) {
-          obj[key] = arguments[i][key];
-        };
-      }
-    }
-    return obj;
   };
 
 
@@ -320,19 +292,6 @@ var _ = { };
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-    var previous = {};
-    var result;
-
-    return function () {
-      var arg = arguments[0] + '';
-      if (arg in previous) {
-        result = previous[arg];
-      } else {
-        result = func.apply(this,arguments);
-        previous[arg] = result;
-      }
-      return result;
-    }
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -342,7 +301,6 @@ var _ = { };
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
-    setTimeout(func.apply(this, arguments),wait);
   };
 
 
