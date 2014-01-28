@@ -152,19 +152,26 @@ var _ = { };
   };
   _.isFunction = function(obj) {
 
-   return (Function.prototype.isPrototypeOf(obj));
+   return typeof obj === 'function';
 
   }
-  // Calls the method named by methodName on each value in the list.
-  // Note: you will nead to learn a bit about .apply to complete this.
-  _.invoke = function(obj, method) {
+
+  // Invoke calls the method by methodName, or by function reference on each value in a list.
+  // Invoke can take in additional arguments which will serve as the inputted method's parameters
+
+  _.invoke = function(list, method) {
+      // Optional parameters for inputted method
       var args = Array.prototype.slice.call(arguments, 2);
+      // Checks if inputted method is a function reference
       var isFunc = _.isFunction(method);
-      console.log(isFunc);
-      return _.map(obj, function(value) {
-        return (isFunc ? method : value[method]).apply(value, args);
+      return _.map(list, function(value) {
+      // Calls apply using inputted function reference, or by inputted method name
+      return (isFunc ? method : value[method]).apply(value, args);
       });
     };
+
+  // var list  = [['hello','bitches'], [1,2]];
+  // console.log(_.invoke(list, 'join', ' '));
 
 
   // Reduces an array or object to a single value by repetitively calling
@@ -187,7 +194,7 @@ var _ = { };
     _.each( collection, function (ele) {
       accumulator = iterator( accumulator, ele )
     })
-    console.log(accumulator);
+    // console.log(accumulator);
     return accumulator;
 
   };
