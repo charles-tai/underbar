@@ -21,11 +21,17 @@ var _ = { };
    * number of values--either an array or an object.
    */
 
+   /////////////////////////////////////////////////////////////////////////////////////////////
+
   // Return an array of the first n elements of an array. If n is undefined,
   // return just the first element.
   _.first = function(array, n) {
     return n === undefined ? array[0] : array.slice(0, n);
   };
+
+  // Application: Retrieve first 10 messages
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
@@ -39,7 +45,11 @@ var _ = { };
     }
   };
 
-  // Call iterator(value, key, collection) for each element of collection.
+  // Application: Retrieve last 10 messages
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
+  // Each calls an iterator(value, key, collection) for each element of collection.
   // Accepts both arrays and objects.
   //
   // Note: _.each does not have a return value, but rather simply runs the
@@ -47,17 +57,20 @@ var _ = { };
   _.each = function(collection, iterator) {
 
     if (Array.isArray(collection)) {
-      var len = collection.length;
-      for (var i = 0; i < len; i++) {
+      var length = collection.length;
+      for (var i = 0; i < length; i++) {
         iterator(collection[i], i, collection);
       }
     } else {
-
       for (var prop in collection) {
-        iterator(collection[prop], prop, collection )
+        iterator(collection[prop], prop, collection)
       }
     }
   };
+
+  // Application: Run a truth test on each element of an array
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
   // Returns the index at which value can be found in the array, or -1 if value
   // is not present in the array.
@@ -76,19 +89,20 @@ var _ = { };
     return result;
   };
 
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
-    var res = [];
-    _.each(collection, function (ele) {
-
-      if (test(ele)) {
-        res.push(ele);
+    var truthyElements =  [];
+    _.each(collection, function (element) {
+      if (test(element)) {
+        truthyElements.push(element);
       }
     });
-
-    return res;
+    return truthyElements;
   };
 
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
@@ -101,29 +115,42 @@ var _ = { };
     // copying code in and modifying it
   };
 
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
-  // Produce a duplicate-free version of the array.
-  _.uniq = function(array) {
-    var unique = [array[0]];
-    for (var i = 0; i < array.length; i++ ) {
-      var button = 'off';
-      for (var j = 0; j < unique.length; j++) {
-        if (array[i] != unique[j]) {
-          button = 'on';
-        } else {
-          button = 'off';
-          break;
-        }
+  // uniq produces a duplicate-free version of the array.
+  _.uniq = function (array) {
+    // iterate through array, check unique array, if doesn't exist already, add to unique array
+    var unique = [];
+    _.each(array, function (element) {
+      if (!_.contains(unique,element)) {
+        unique.push(element);
       }
-      if (button == 'on') {
-        unique.push(array[i]);
-      }
-    }
+    })
     return unique;
-  };
+  }
+  // Without contains
+  // _.uniq = function(array) {
+  //   var unique = [array[0]];
+  //   for (var i = 0; i < array.length; i++ ) {
+  //     var button = 'off';
+  //     for (var j = 0; j < unique.length; j++) {
+  //       if (array[i] != unique[j]) {
+  //         button = 'on';
+  //       } else {
+  //         button = 'off';
+  //         break;
+  //       }
+  //     }
+  //     if (button == 'on') {
+  //       unique.push(array[i]);
+  //     }
+  //   }
+  //   return unique;
+  // };
 
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
-  // Return the results of applying an iterator to each element.
+  // map returns the results of applying an iterator to each element.
   _.map = function(array, iterator) {
     var mapped = [];
     _.each(array, function (ele) {
@@ -139,6 +166,8 @@ var _ = { };
    * as an example of this.
    */
 
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
   // Takes an array of objects and returns and array of the values of
   // a certain property in it. E.g. take an array of people and return
   // an array of just their ages
@@ -150,29 +179,36 @@ var _ = { };
       return value[propertyName];
     });
   };
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
   _.isFunction = function(obj) {
 
    return typeof obj === 'function';
 
   }
 
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
   // Invoke calls the method by methodName, or by function reference on each value in a list.
   // Invoke can take in additional arguments which will serve as the inputted method's parameters
 
   _.invoke = function(list, method) {
-      // Optional parameters for inputted method
+      // Copies pseudo-array, arguments, to be used for target method's parameters
       var args = Array.prototype.slice.call(arguments, 2);
       // Checks if inputted method is a function reference
       var isFunc = _.isFunction(method);
-      return _.map(list, function(value) {
-      // Calls apply using inputted function reference, or by inputted method name
-      return (isFunc ? method : value[method]).apply(value, args);
+      return _.map(list, function(item) {
+      // Calls apply using inputted function reference, or by inputted method name.
+      return (isFunc ? method : item[method]).apply(item, args);
       });
     };
 
+  ///////////////// Test Case ////////////////
   // var list  = [['hello','bitches'], [1,2]];
   // console.log(_.invoke(list, 'join', ' '));
 
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
   // Reduces an array or object to a single value by repetitively calling
   // iterator(previousValue, item) for each item. previousValue should be
@@ -187,6 +223,7 @@ var _ = { };
   //   var sum = _.reduce(numbers, function(total, number){
   //     return total + number;
   //   }, 0); // should be 6
+
   _.reduce = function(collection, iterator, accumulator) {
     if (accumulator == undefined) {
       accumulator = collection[0];
@@ -194,10 +231,10 @@ var _ = { };
     _.each( collection, function (ele) {
       accumulator = iterator( accumulator, ele )
     })
-    // console.log(accumulator);
     return accumulator;
-
   };
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
@@ -211,6 +248,7 @@ var _ = { };
     }, false);
   };
 
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
@@ -231,6 +269,8 @@ var _ = { };
       }
     // TIP: Try re-using reduce() here.
   };
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
@@ -264,6 +304,9 @@ var _ = { };
   //   }, {
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
   _.extend = function (obj) {
     var len = arguments.length;
     for (var i = 1; i < len; i++) {
@@ -273,6 +316,8 @@ var _ = { };
     }
     return obj;
   };
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
@@ -288,6 +333,7 @@ var _ = { };
     return obj;
   };
 
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
   /**
    * FUNCTIONS
@@ -296,6 +342,8 @@ var _ = { };
    * Now we're getting into function decorators, which take in any function
    * and return out a new version of the function that works somewhat differently
    */
+
+   /////////////////////////////////////////////////////////////////////////////////////////////
 
   // Return a function that can be called at most one time. Subsequent calls
   // should return the previously returned value.
@@ -320,6 +368,8 @@ var _ = { };
     };
   };
 
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
   // Memoize an expensive function by storing its results. You may assume
   // that the function takes only one argument and that it is a primitive.
   //
@@ -342,6 +392,8 @@ var _ = { };
     }
   };
 
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
   //
@@ -359,6 +411,8 @@ var _ = { };
    * ADVANCED COLLECTION OPERATIONS
    * ==============================
    */
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
 
   // Randomizes the order of an array's contents.
   //
@@ -379,6 +433,8 @@ var _ = { };
         }
       }
     }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
 
     _.each( array, function (item) {
       findNum(item);
