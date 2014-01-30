@@ -37,11 +37,12 @@ var _ = { };
   // last element.
   _.last = function(array, n) {
     if (n === undefined) {
-      return array[array.length-1]
-    } else if (n === 0) {
-      return [];
+      return array[array.length-1];
+
+    } else if (n <= array.length) {
+      return array.slice(array.length - n)  ;
     } else {
-      return array.slice(-n);
+      return array;
     }
   };
 
@@ -56,14 +57,13 @@ var _ = { };
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
 
-    if (Array.isArray(collection)) {
-      var length = collection.length;
-      for (var i = 0; i < length; i++) {
+    if (Array.prototype.isPrototypeOf(collection)) {
+      for (var i = 0; i < collection.length; i++) {
         iterator(collection[i], i, collection);
       }
     } else {
       for (var prop in collection) {
-        iterator(collection[prop], prop, collection)
+        iterator(collection[prop], prop, collection);
       }
     }
   };
@@ -106,10 +106,10 @@ var _ = { };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
-
-    return _.filter(collection, function (val) {
-      return !test(val);
+    return _.filter(collection, function (item) {
+      return !test(item);
     });
+  };
 
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
@@ -128,36 +128,17 @@ var _ = { };
     })
     return unique;
   }
-  // Without contains
-  // _.uniq = function(array) {
-  //   var unique = [array[0]];
-  //   for (var i = 0; i < array.length; i++ ) {
-  //     var button = 'off';
-  //     for (var j = 0; j < unique.length; j++) {
-  //       if (array[i] != unique[j]) {
-  //         button = 'on';
-  //       } else {
-  //         button = 'off';
-  //         break;
-  //       }
-  //     }
-  //     if (button == 'on') {
-  //       unique.push(array[i]);
-  //     }
-  //   }
-  //   return unique;
-  // };
 
   /////////////////////////////////////////////////////////////////////////////////////////////
 
   // map returns the results of applying an iterator to each element.
   _.map = function(array, iterator) {
-    var mapped = [];
-    _.each(array, function (ele) {
-      var changed = iterator (ele);
-      mapped.push(changed);
-    })
-    return mapped;
+   // iterate through each item, apply the iterator to each element, push onto new array
+   var results = [];
+   _.each(array, function (item,i,collection) {
+      results.push(iterator(item));
+   })
+   return results;
   };
 
   /*
@@ -175,8 +156,8 @@ var _ = { };
     // TIP: map is really handy when you want to transform an array of
     // values into a new array of values. _.pluck() is solved for you
     // as an example of this.
-    return _.map(array, function(value){
-      return value[propertyName];
+    return _.map(array, function (object) {
+      return object[propertyName];
     });
   };
 
@@ -228,8 +209,8 @@ var _ = { };
     if (accumulator == undefined) {
       accumulator = collection[0];
     }
-    _.each( collection, function (ele) {
-      accumulator = iterator( accumulator, ele )
+    _.each( collection, function (item) {
+      accumulator = iterator( accumulator, item )
     })
     return accumulator;
   };
@@ -251,23 +232,11 @@ var _ = { };
   /////////////////////////////////////////////////////////////////////////////////////////////
 
   // Determine whether all of the elements match a truth test.
-  _.every = function(collection, iterator) {
-      iterator || (iterator = _.identity);
-      var test = _.reduce(collection,
-          function (start,ele) {
-            if (start == 'false') {
-             return 'false';
-            }
-            if (!iterator(ele)) {
-              return 'false';
-            }
-          })
-      if (test == 'false'){
-        return false;
-      } else {
-        return true;
-      }
-    // TIP: Try re-using reduce() here.
+  _.every = function(collection, test) {
+      test || (test = _.identity);
+      return _.reduce(collection, function (previous, current) {
+        return previous && (test(current) ? true : false))
+      }, true)
   };
 
   /////////////////////////////////////////////////////////////////////////////////////////////
