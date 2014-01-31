@@ -113,7 +113,6 @@ var _ = { };
 
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
-  };
 
   /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -233,26 +232,22 @@ var _ = { };
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, test) {
-      test || (test = _.identity);
+      test = test || _.identity;
       return _.reduce(collection, function (previous, current) {
-        return previous && (test(current) ? true : false))
+        return previous && Boolean(test(current));
       }, true)
-  };
+  }
 
   /////////////////////////////////////////////////////////////////////////////////////////////
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
-  _.some = function(collection, iterator) {
-    iterator || (iterator = _.identity);
-    var test = _.every(collection, function (ele) {
-       return !iterator(ele);
-    })
-    if (test == false) {
-     return true;
-    } else {
-     return false;
-    }
+  // if any return true then return true
+  _.some = function(collection, test) {
+    test = test || _.identity;
+    return _.reduce(collection, function (previous, current) {
+      return (previous ? true : Boolean(test(current)));
+    }, false);
   };
 
   /**
